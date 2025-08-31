@@ -1,5 +1,6 @@
 import os
 from enum import Enum
+from pathlib import Path
 
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings
@@ -143,5 +144,7 @@ class Settings(
 ):
     pass
 
-
+BASE_DIR = Path(__file__).resolve().parents[2]  # будет /code/
+path_to_files = BASE_DIR / "user_files"
+path_to_files.mkdir(exist_ok=True)
 settings = Settings()

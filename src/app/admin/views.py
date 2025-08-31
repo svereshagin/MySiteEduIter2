@@ -8,9 +8,11 @@ from ..core.security import get_password_hash
 from ..models.post import Post
 from ..models.tier import Tier
 from ..models.user import User
+from ..models.classwork import ClassWork
 from ..schemas.post import PostUpdate
 from ..schemas.tier import TierCreate, TierUpdate
 from ..schemas.user import UserCreate, UserUpdate
+from ..schemas.classwork import ClassWorkCreate, ClassWorkUpdate, ClassWorkRead
 
 
 class PostCreateAdmin(BaseModel):
@@ -56,5 +58,12 @@ def register_admin_views(admin: CRUDAdmin) -> None:
         model=Post,
         create_schema=PostCreateAdmin,
         update_schema=PostUpdate,
+        allowed_actions={"view", "create", "update", "delete"},
+    )
+
+    admin.add_view(
+        model=ClassWork,
+        create_schema=ClassWorkRead,
+        update_schema=ClassWorkUpdate,
         allowed_actions={"view", "create", "update", "delete"},
     )
