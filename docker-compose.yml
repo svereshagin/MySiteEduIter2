@@ -12,9 +12,10 @@ services:
       - ./src/.env
     # -------- replace with comment if you are using nginx --------
     ports:
-      - "${WEB_PORT:-57214}:${WEB_PORT:-57214}"
-    # expose:
-    #   - "8000"
+      - "8000:8000"
+      #- "${WEB_PORT:-57214}:${WEB_PORT:-57214}"
+    expose:
+      - "8000"
     depends_on:
       - db
       - redis
