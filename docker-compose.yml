@@ -4,18 +4,17 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile-localhost
+      dockerfile: Dockerfile
     # -------- replace with comment to run with gunicorn --------
-    #command: uvicorn app.main:app --host 0.0.0.0 --port 57214 --reload
-    command: gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    # command: gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
     env_file:
       - ./src/.env
     # -------- replace with comment if you are using nginx --------
     ports:
       - "8000:8000"
-      #- "${WEB_PORT:-57214}:${WEB_PORT:-57214}"
-    expose:
-      - "8000"
+    # expose:
+    #   - "8000"
     depends_on:
       - db
       - redis
@@ -26,10 +25,8 @@ services:
   worker:
     build:
       context: .
-      dockerfile: Dockerfile-localhost
-    command:
-      - /code/.venv/bin/arq
-      - src.app.core.worker.settings.WorkerSettings
+      dockerfile: Dockerfile
+    command: arq app.core.worker.settings.WorkerSettings
     env_file:
       - ./src/.env
     depends_on:
@@ -46,10 +43,10 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     # -------- replace with comment to run migrations with docker --------
-#    expose:
-#      - "5432"
-    ports:
-      - "${POSTGRES_PORT:-50000}:${POSTGRES_PORT:-50000}"
+    expose:
+      - "5432"
+    # ports:
+    #  - 5432:5432
 
   redis:
     image: redis:alpine
@@ -59,18 +56,18 @@ services:
       - "6379"
 
   #-------- uncomment to run with pgadmin --------
-  pgadmin:
-   container_name: pgadmin4
-   image: dpage/pgadmin4:latest
-   restart: always
-   ports:
-     - "5050:80"
-   volumes:
-     - pgadmin-data:/var/lib/pgadmin
-   env_file:
-     - ./src/.env
-   depends_on:
-     - db
+  # pgadmin:
+  #   container_name: pgadmin4
+  #   image: dpage/pgadmin4:latest
+  #   restart: always
+  #   ports:
+  #     - "5050:80"
+  #   volumes:
+  #     - pgadmin-data:/var/lib/pgadmin
+  #   env_file:
+  #     - ./src/.env
+  #   depends_on:
+  #     - db
 
   #-------- uncomment to run with nginx --------
   nginx:
@@ -82,25 +79,25 @@ services:
    depends_on:
      - web
 
- # -------- uncomment to create first superuser --------
+  #-------- uncomment to create first superuser --------
   create_superuser:
-   build:
-     context: .
-     dockerfile: Dockerfile-localhost
-   env_file:
-     - ./src/.env
-   depends_on:
-     - db
-     - web
-   command: python -m src.scripts.create_first_superuser
-   volumes:
-     - ./src:/code/src
+     build:
+       context: .
+       dockerfile: Dockerfile
+     env_file:
+       - ./src/.env
+     depends_on:
+       - db
+       - web
+     command: python -m src.scripts.create_first_superuser
+     volumes:
+       - ./src:/code/src
 
   #-------- uncomment to create first tier --------
   create_tier:
    build:
      context: .
-     dockerfile: Dockerfile-localhost
+     dockerfile: Dockerfile
    env_file:
      - ./src/.env
    depends_on:
@@ -113,4 +110,4 @@ services:
 volumes:
   postgres-data:
   redis-data:
-  pgadmin-data:
+  #pgadmin-data:
