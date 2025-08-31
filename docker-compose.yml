@@ -4,7 +4,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-localhost
     # -------- replace with comment to run with gunicorn --------
     #command: uvicorn app.main:app --host 0.0.0.0 --port 57214 --reload
     command: gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
@@ -25,7 +25,7 @@ services:
   worker:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-localhost
     command: arq app.core.worker.settings.WorkerSettings
     env_file:
       - ./src/.env
@@ -83,7 +83,7 @@ services:
   create_superuser:
    build:
      context: .
-     dockerfile: Dockerfile
+     dockerfile: Dockerfile-localhost
    env_file:
      - ./src/.env
    depends_on:
@@ -97,7 +97,7 @@ services:
   create_tier:
    build:
      context: .
-     dockerfile: Dockerfile
+     dockerfile: Dockerfile-localhost
    env_file:
      - ./src/.env
    depends_on:

@@ -593,7 +593,7 @@ First, you may want to take a look at the project structure and understand what 
 
 ```sh
 .
-├── Dockerfile                        # Dockerfile for building the application container.
+├── Dockerfile-localhost                        # Dockerfile-localhost for building the application container.
 ├── docker-compose.yml                # Docker Compose file for defining multi-container applications.
 ├── pyproject.toml                    # Project configuration file with metadata and dependencies (PEP 621).
 ├── uv.lock                          # uv lock file specifying exact versions of dependencies.
@@ -1793,7 +1793,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-localhost
     # -------- replace with comment to run with gunicorn --------
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     # command: gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
@@ -1867,7 +1867,7 @@ And the same in `Dockerfile`:
 This part:
 
 ```Dockerfile
-# Dockerfile
+# Dockerfile-localhost
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 # CMD ["gunicorn", "app.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker". "-b", "0.0.0.0:8000"]
@@ -1876,7 +1876,7 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload
 Should be changed to:
 
 ```Dockerfile
-# Dockerfile
+# Dockerfile-localhost
 
 # CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 CMD ["gunicorn", "app.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker". "-b", "0.0.0.0:8000"]
@@ -1955,7 +1955,7 @@ Then pick the way you want to run (uvicorn or gunicorn managing uvicorn workers)
 The one you want should be uncommented, comment the other one.
 
 ```Dockerfile
-# Dockerfile
+# Dockerfile-localhost
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 # CMD ["gunicorn", "app.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker". "-b", "0.0.0.0:8000"]

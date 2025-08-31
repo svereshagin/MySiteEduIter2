@@ -1,7 +1,8 @@
 FROM python:3.11-slim
 
 WORKDIR /code
-
+# Создаём директорию для логов и устанавливаем права
+RUN mkdir -p /code/app/logs && chmod -R 755 /code/app/logs
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
