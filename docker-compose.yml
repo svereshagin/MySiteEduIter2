@@ -27,7 +27,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-localhost
-    command: arq app.core.worker.settings.WorkerSettings
+    command:
+      - /code/.venv/bin/arq
+      - src.app.core.worker.settings.WorkerSettings
     env_file:
       - ./src/.env
     depends_on:
