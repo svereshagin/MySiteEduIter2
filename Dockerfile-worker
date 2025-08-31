@@ -1,0 +1,31 @@
+FROM python:3.11-slim
+
+# Установка базовых зависимостей
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Установка uv
+RUN pip install uv
+
+WORKDIR /code
+
+# Создание директории для логов
+RUN mkdir -p /code/app/logs && chmod -R 755 /code/app/logs
+
+# Копирование файлов зависимостей
+COPY README.md pyproject.toml uv.lock ./
+
+# Синхронизация зависимостей с явной установкой arq
+RUN uv sync --frozen --no-dev
+RUN . /code/.venv/bin/activate && uv add arq && chmod +x /code/.venv/bin/arq
+
+# Копирование остального кода
+COPY src/ ./src/
+
+# Создание пользователя и установка прав
+RUN useradd --create-home --shell /bin/bash app \
+    && chown -R app:app /code
+
+USER app
+CMD ["/code/.venv/bin/arq", "src.app.core.worker.settings.WorkerSettings"]
