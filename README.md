@@ -593,7 +593,7 @@ First, you may want to take a look at the project structure and understand what 
 
 ```sh
 .
-├── Dockerfile-localhost                        # Dockerfile-localhost for building the application container.
+├── Dockerfile                        # Dockerfile for building the application container.
 ├── docker-compose.yml                # Docker Compose file for defining multi-container applications.
 ├── pyproject.toml                    # Project configuration file with metadata and dependencies (PEP 621).
 ├── uv.lock                          # uv lock file specifying exact versions of dependencies.
@@ -1790,42 +1790,42 @@ Then comment or remove the services you do not want from `docker-compose.yml`. H
 version: '3.8'
 
 services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile-localhost
-    # -------- replace with comment to run with gunicorn --------
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-    # command: gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
-    env_file:
-      - ./src/.env
-    # -------- replace with comment if you are using nginx --------
-    ports:
-      - "8000:8000"
-    # expose:
-    #   - "8000"
-    depends_on:
-      - db
-      - redis
-    volumes:
-      - ./src/app:/code/app
-      - ./src/.env:/code/.env
-  db:
-    image: postgres:13
-    env_file:
-      - ./src/.env
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    # -------- replace with comment to run migrations with docker --------
-    expose:
-      - "5432"
-    # ports:
-    #  - 5432:5432
+   web:
+      build:
+         context: .
+         dockerfile: Dockerfile
+      # -------- replace with comment to run with gunicorn --------
+      command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      # command: gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
+      env_file:
+         - ./src/.env
+      # -------- replace with comment if you are using nginx --------
+      ports:
+         - "8000:8000"
+      # expose:
+      #   - "8000"
+      depends_on:
+         - db
+         - redis
+      volumes:
+         - ./src/app:/code/app
+         - ./src/.env:/code/.env
+   db:
+      image: postgres:13
+      env_file:
+         - ./src/.env
+      volumes:
+         - postgres-data:/var/lib/postgresql/data
+      # -------- replace with comment to run migrations with docker --------
+      expose:
+         - "5432"
+      # ports:
+      #  - 5432:5432
 
 volumes:
-  postgres-data:
-  redis-data:
-  #pgadmin-data:
+   postgres-data:
+   redis-data:
+   #pgadmin-data:
 ```
 
 ## 6. Running in Production
@@ -1867,7 +1867,7 @@ And the same in `Dockerfile`:
 This part:
 
 ```Dockerfile
-# Dockerfile-localhost
+# Dockerfile
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 # CMD ["gunicorn", "app.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker". "-b", "0.0.0.0:8000"]
@@ -1876,7 +1876,7 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload
 Should be changed to:
 
 ```Dockerfile
-# Dockerfile-localhost
+# Dockerfile
 
 # CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 CMD ["gunicorn", "app.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker". "-b", "0.0.0.0:8000"]
@@ -1955,7 +1955,7 @@ Then pick the way you want to run (uvicorn or gunicorn managing uvicorn workers)
 The one you want should be uncommented, comment the other one.
 
 ```Dockerfile
-# Dockerfile-localhost
+# Dockerfile
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 # CMD ["gunicorn", "app.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker". "-b", "0.0.0.0:8000"]

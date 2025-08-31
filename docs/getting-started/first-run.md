@@ -87,7 +87,7 @@ If using Docker Compose, uncomment this section in your `docker-compose.yml`:
 create_superuser:
   build:
     context: .
-    dockerfile: Dockerfile-localhost
+    dockerfile: Dockerfile
   env_file:
     - ./src/.env
   depends_on:

@@ -32,7 +32,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile-localhost
+      dockerfile: Dockerfile
     # Development mode (reload enabled)
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     # Production mode (uncomment for production)
@@ -51,7 +51,7 @@ services:
   worker:
     build:
       context: .
-      dockerfile: Dockerfile-localhost
+      dockerfile: Dockerfile
     command: arq app.core.worker.settings.WorkerSettings
     env_file:
       - ./src/.env
@@ -108,7 +108,7 @@ The web service runs your FastAPI application:
 web:
   build:
     context: .
-    dockerfile: Dockerfile-localhost
+    dockerfile: Dockerfile
   # Development: uvicorn with reload
   command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
   # Production: gunicorn with multiple workers (commented out)
@@ -137,7 +137,7 @@ Handles background job processing with ARQ:
 worker:
   build:
     context: .
-    dockerfile: Dockerfile-localhost
+    dockerfile: Dockerfile
   command: arq app.core.worker.settings.WorkerSettings
   env_file:
     - ./src/.env
@@ -263,7 +263,7 @@ server {
 create_superuser:
   build:
     context: .
-    dockerfile: Dockerfile-localhost
+    dockerfile: Dockerfile
   env_file:
     - ./src/.env
   depends_on:
@@ -280,7 +280,7 @@ create_superuser:
 create_tier:
   build:
     context: .
-    dockerfile: Dockerfile-localhost
+    dockerfile: Dockerfile
   env_file:
     - ./src/.env
   depends_on:

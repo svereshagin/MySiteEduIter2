@@ -372,7 +372,7 @@ services:
 In production, run migrations separately:
 
 ```dockerfile
-# Dockerfile-localhost migration stage
+# Dockerfile migration stage
 FROM python:3.11-slim as migration
 COPY requirements.txt .
 RUN pip install -r requirements.txt
