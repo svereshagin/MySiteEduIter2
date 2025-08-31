@@ -34,6 +34,7 @@ app = create_application(router=router, settings=settings, lifespan=lifespan_wit
 
 origins = [
     "http://localhost:5173",  # Your frontend's origin
+    "https://proggyit.ru/"
     "http://localhost:8000",  # Your backend's origin (optional)
 ]
 
