@@ -24,7 +24,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-prod
-    command: uvicorn src.app.core.worker.settings:WorkerSettings
+    command: /app/.venv/bin/arq src.app.core.worker.settings.WorkerSettings
     env_file:
       - ./src/.env
     depends_on:
