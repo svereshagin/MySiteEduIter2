@@ -15,7 +15,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Copy the project source code
 COPY . /app
-
+RUN mkdir -p /code/app/logs
+RUN chmod 777 /code/app/logs
 # Install the project in non-editable mode
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-editable
