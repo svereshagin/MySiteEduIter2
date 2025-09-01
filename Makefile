@@ -2,7 +2,7 @@
 
 # Переменные
 COMPOSE_FILE ?= docker-compose.yml
-PROJECT_NAME ?= $(shell basename $(PWD))
+PROJECT_NAME ?= backendproggyit
 
 # Удаление всех неиспользуемых Docker-ресурсов (images, builds, volumes)
 clean:
