@@ -1,4 +1,3 @@
-# --------- Builder Stage ---------
 FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim AS builder
 
 # Set environment variables for uv
@@ -15,8 +14,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Copy the project source code
 COPY . /app
-RUN mkdir -p /code/app/logs
-RUN chmod 777 /code/app/logs
+
 # Install the project in non-editable mode
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-editable
@@ -28,8 +26,14 @@ FROM python:3.11-slim-bookworm
 RUN groupadd --gid 1000 app \
     && useradd --uid 1000 --gid app --shell /bin/bash --create-home app
 
-# Copy the virtual environment from the builder stage
+# Create necessary directories with correct permissions
+RUN mkdir -p /code/src/user_files /code/app/logs \
+    && chown -R app:app /code \
+    && chmod -R 755 /code
+
+# Copy the virtual environment and source code from the builder stage
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
+COPY --from=builder --chown=app:app /app/src /code/src
 
 # Ensure the virtual environment is in the PATH
 ENV PATH="/app/.venv/bin:$PATH"
@@ -39,7 +43,7 @@ USER app
 
 # Set the working directory
 WORKDIR /code
-RUN mkdir -p /code/app/logs && chmod 777 /code/app/logs
-# -------- replace with comment to run with gunicorn --------
+
+# Command to run the application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 #CMD ["gunicorn", "app.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:8000"]
