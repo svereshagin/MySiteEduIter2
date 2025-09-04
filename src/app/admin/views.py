@@ -2,7 +2,7 @@ from typing import Annotated
 
 from crudadmin import CRUDAdmin
 from crudadmin.admin_interface.model_view import PasswordTransformer
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator, ConfigDict
 
 from ..core.security import get_password_hash
 from ..models.post import Post
@@ -25,6 +25,31 @@ class PostCreateAdmin(BaseModel):
     ]
 
 
+from pydantic import BaseModel, ConfigDict, Field, EmailStr, model_validator
+from typing import Annotated
+from ..core.security import get_password_hash
+
+
+
+
+class UserCreateAdmin(BaseModel):
+    model_config = ConfigDict(extra="ignore")  
+
+    username: Annotated[str, Field(min_length=3, max_length=50, examples=["johndoe"])]
+    name: Annotated[str, Field(min_length=2, max_length=100, examples=["John Doe"])]
+    email: Annotated[EmailStr, Field(examples=["john.doe@example.com"])]
+    hashed_password: str | None = None  # Optional; will be hashed if provided
+
+    @field_validator("hashed_password", mode="before")
+    @classmethod
+    def hash_incoming_value(cls, value: str | None) -> str | None:
+        """Hash the incoming value if provided."""
+        if value is not None:
+            return get_password_hash(value)  
+        return value 
+    
+    
+    
 def register_admin_views(admin: CRUDAdmin) -> None:
     """Register all models and their schemas with the admin interface.
 
@@ -32,19 +57,19 @@ def register_admin_views(admin: CRUDAdmin) -> None:
     schemas and permissions.
     """
 
-    password_transformer = PasswordTransformer(
-        password_field="password",
-        hashed_field="hashed_password",
-        hash_function=get_password_hash,
-        required_fields=["name", "username", "email"],
-    )
+    # password_transformer = PasswordTransformer(
+    #     password_field="password",
+    #     hashed_field="hashed_password",
+    #     hash_function=get_password_hash,
+    #     required_fields=["name", "username", "email"],
+    # )
 
     admin.add_view(
         model=User,
-        create_schema=UserCreate,
+        create_schema=UserCreateAdmin,
         update_schema=UserUpdate,
         allowed_actions={"view", "create", "update"},
-        password_transformer=password_transformer,
+        #password_transformer=password_transformer,
     )
 
     admin.add_view(
